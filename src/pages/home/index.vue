@@ -21,15 +21,28 @@
     name: 'app',
     data () {
       return {
-        imgUrls: [
-          'https://f10.baidu.com/it/u=1261817652,2420085224&fm=72',
-          'http://img4.imgtn.bdimg.com/it/u=1540229220,2046462304&fm=26&gp=0.jpg',
-          'http://img1.imgtn.bdimg.com/it/u=1405017238,2507623329&fm=26&gp=0.jpg'
-        ],
+        imgUrls: [],
         indicatorDots: true, // 显示底部小圆点
         autoplay: true,       // 自动播放
         circular: true        // 是否采用衔接滑动
       }
+    },
+    created () {
+      // 获取轮播图数据
+      let that = this;
+      mpvue.request({
+        url: 'https://www.zhengzhicheng.cn/api/public/v1/home/swiperdata',
+        success: function(res) {
+          // console.log(res)
+          let list = res.data['message'];
+          // 从数组对象中获取其中一个属性
+          list = list.map(item => {
+            return item.image_src;
+          })
+          // console.log(list)
+          that.imgUrls = list
+        }
+      })
     }
   }
 </script>
@@ -56,5 +69,6 @@
   }
   .slide-image {
     width: 100%;
+    height: 100%;
   }
 </style>
