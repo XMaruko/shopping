@@ -13,6 +13,12 @@
        <image :src="item" class="slide-image"/>
      </swiper-item>
    </swiper>
+   <!-- 快捷菜单 -->
+   <div class="menu">
+     <div class="menu-item" v-for="(item,index) in meuns" :key="index">
+       <img :src="item" />
+     </div>
+   </div>
   </div>
 </template>
 
@@ -21,26 +27,51 @@
     name: 'app',
     data () {
       return {
-        imgUrls: [],
+        imgUrls: [],          // 轮播图图片
         indicatorDots: true, // 显示底部小圆点
         autoplay: true,       // 自动播放
-        circular: true        // 是否采用衔接滑动
+        circular: true,        // 是否采用衔接滑动
+        meuns: []
       }
     },
     created () {
-      // 获取轮播图数据
       let that = this;
+      // 获取轮播图数据
       mpvue.request({
         url: 'https://www.zhengzhicheng.cn/api/public/v1/home/swiperdata',
         success: function(res) {
           // console.log(res)
           let list = res.data['message'];
           // 从数组对象中获取其中一个属性
-          list = list.map(item => {
+          that.imgUrls = res.data && res.data['message'] ? res.data['message'].map(item => {
             return item.image_src;
-          })
-          // console.log(list)
-          that.imgUrls = list
+          }) : []
+        }
+      })
+
+      // 快捷菜单栏数据
+      mpvue.request({
+        url: 'https://www.zhengzhicheng.cn/api/public/v1/home/catitems',
+        success: function(res){
+          // console.log(res.data)
+          // 验证数组 前两个为true的话，就执行map操作，否则为空
+            if ( res.data && Array.isArray(res.data['message'])){
+             that.meuns = res.data['message'].map(item => {
+                return item.image_src
+              })
+            } else {
+              that.meuns = []
+            }
+            
+            // ES6 解构赋值
+            // let {message} = res.data;
+            // that.meuns = message
+
+          // let menulist = res.data['message'];
+          // 验证数组 前两个为true的话，就执行map操作，否则为空
+          // that.meuns = res.data && res.data['message'] ? res.data['message'].map(item => {
+          //   return item.image_src
+          // }) : []
         }
       })
     }
@@ -70,5 +101,14 @@
   .slide-image {
     width: 100%;
     height: 100%;
+  }
+  .menu {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px 0;
+  }
+  .menu .menu-item img{
+    width: 150rpx;
+    height: 150rpx;
   }
 </style>
