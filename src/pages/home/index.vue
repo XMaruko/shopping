@@ -19,10 +19,18 @@
        <img :src="item" />
      </div>
    </div>
+   <!-- 楼层数据 -->
+   <div class="floor">
+     <div class="floor-title">
+       <img src='https://www.zhengzhicheng.cn/pyg/pic_floor01_title.png' />
+     </div>
+   </div>
   </div>
 </template>
 
 <script>
+  import request from '../../utils/request.js'
+
   export default {
     name: 'app',
     data () {
@@ -31,38 +39,67 @@
         indicatorDots: true, // 显示底部小圆点
         autoplay: true,       // 自动播放
         circular: true,        // 是否采用衔接滑动
-        meuns: []
+        meuns: [],             // 快捷菜单图片
       }
     },
+    methods: {
+      // 轮播图
+     async swiper () {
+        let that = this;
+        // 获取轮播图数据
+         let res = await request('home/swiperdata');
+         // 转换数据格式
+         this.imgUrls = res.data && res.data.message ? res.data.message.map(item => {
+           return item.image_src;
+         }) : []
+      },
+      // 快捷菜单
+     async quick () {
+        let that = this;
+        // 获取数据
+        let res = await request('home/catitems');
+        // 转换数据格式
+        that.meuns = res.data && res.data['message'] ? res.data['message'].map(item => {
+          return item.image_src
+        }) : []
+     },
+     // 楼层数据
+     // async floorData () {
+     //   let that = this;
+     //   let res = await request('home/floordata');
+     //   that.
+     // }
+    },
     created () {
-      let that = this;
-      // 获取轮播图数据
-      mpvue.request({
-        url: 'https://www.zhengzhicheng.cn/api/public/v1/home/swiperdata',
-        success: function(res) {
-          // console.log(res)
-          let list = res.data['message'];
-          // 从数组对象中获取其中一个属性
-          that.imgUrls = res.data && res.data['message'] ? res.data['message'].map(item => {
-            return item.image_src;
-          }) : []
-        }
-      })
+      this.swiper();
+      this.quick();
+
+      // mpvue.request({
+      //   url: 'https://www.zhengzhicheng.cn/api/public/v1/home/swiperdata',
+      //   success: function(res) {
+      //     // console.log(res)
+      //     let list = res.data['message'];
+      //     // 从数组对象中获取其中一个属性
+      //     that.imgUrls = res.data && res.data['message'] ? res.data['message'].map(item => {
+      //       return item.image_src;
+      //     }) : []
+      //   }
+      // })
 
       // 快捷菜单栏数据
-      mpvue.request({
-        url: 'https://www.zhengzhicheng.cn/api/public/v1/home/catitems',
-        success: function(res){
-          // console.log(res.data)
-          // 验证数组 前两个为true的话，就执行map操作，否则为空
-            if ( res.data && Array.isArray(res.data['message'])){
-             that.meuns = res.data['message'].map(item => {
-                return item.image_src
-              })
-            } else {
-              that.meuns = []
-            }
-            
+      // mpvue.request({
+      //   url: 'https://www.zhengzhicheng.cn/api/public/v1/home/catitems',
+      //   success: function(res){
+      //     // console.log(res.data)
+      //     // 验证数组 前两个为true的话，就执行map操作，否则为空
+            // if ( res.data && Array.isArray(res.data['message'])){
+            //  that.meuns = res.data['message'].map(item => {
+            //     return item.image_src
+            //   })
+            // } else {
+            //   that.meuns = []
+            // }
+
             // ES6 解构赋值
             // let {message} = res.data;
             // that.meuns = message
@@ -73,8 +110,8 @@
           //   return item.image_src
           // }) : []
         }
-      })
-    }
+      // })
+    // }
   }
 </script>
 
@@ -110,5 +147,9 @@
   .menu .menu-item img{
     width: 150rpx;
     height: 150rpx;
+  }
+  .floor .floor-title img{
+    width: 100%;
+    height: 130rpx;
   }
 </style>
