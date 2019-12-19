@@ -20,19 +20,16 @@
      </div>
    </div>
    <!-- 楼层数据 -->
-   <div class="floor">
+   <div class="floor" v-for="(item,index) in floors" :key="index">
      <div class="floor-title">
-       <img src='https://www.zhengzhicheng.cn/pyg/pic_floor01_title.png' />
+       <img :src='item.floor_title.image_src' />
      </div>
      <div class="floor-content">
        <div class="left">
-         <img src="https://www.zhengzhicheng.cn/pyg/pic_floor01_1@2x.png" />
+         <img :src="item.product_list[0].image_src" />
        </div>
        <div class="right">
-         <img src="https://www.zhengzhicheng.cn/pyg/pic_floor01_2@2x.png" />
-         <img src="https://www.zhengzhicheng.cn/pyg/pic_floor01_3@2x.png" />
-         <img src="https://www.zhengzhicheng.cn/pyg/pic_floor01_4@2x.png" />
-         <img src="https://www.zhengzhicheng.cn/pyg/pic_floor01_5@2x.png" />
+         <img v-if="i>0" v-for="(img,i) in item.product_list" :key="i" :src="img.image_src" />
        </div>
      </div>
    </div>
@@ -76,15 +73,16 @@
         }) : []
      },
      // 楼层数据
-     // async floorData () {
-     //   let that = this;
-     //   let res = await request('home/floordata');
-     //   that.
-     // }
+     async floorData () {
+       let that = this;
+       let res = await request('home/floordata');
+       this.floors = res.data && res.data['message'] ? res.data['message'] : []
+     },
     },
     created () {
       this.swiper();
       this.quick();
+      this.floorData();
 
       // mpvue.request({
       //   url: 'https://www.zhengzhicheng.cn/api/public/v1/home/swiperdata',
