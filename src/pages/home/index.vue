@@ -25,7 +25,7 @@
        <img :src='item.floor_title.image_src' />
      </div>
      <div class="floor-content">
-       <div class="left">
+      <div class="left">
          <img :src="item.product_list[0].image_src" />
        </div>
        <div class="right">
@@ -33,7 +33,16 @@
        </div>
      </div>
    </div>
+   <!-- 回到顶部 -->
+   <div v-show="isShow">
+    <div class="to-top" @click="toTopHandle ()">
+      ︿
+      <p>顶部</p>
+    </div>
+   </div>
+
   </div>
+
 </template>
 
 <script>
@@ -48,7 +57,8 @@
         autoplay: true,       // 自动播放
         circular: true,        // 是否采用衔接滑动
         meuns: [],             // 快捷菜单图片
-        floors: []             // 楼层图片
+        floors: [],             // 楼层图片
+        isShow: false
       }
     },
     methods: {
@@ -62,6 +72,7 @@
            return item.image_src;
          }) : []
       },
+
       // 快捷菜单
      async quick () {
         let that = this;
@@ -72,12 +83,20 @@
           return item.image_src
         }) : []
      },
+
      // 楼层数据
      async floorData () {
        let that = this;
        let res = await request('home/floordata');
        this.floors = res.data && res.data['message'] ? res.data['message'] : []
      },
+
+     toTopHandle () {
+       // 控制回到顶部
+       mpvue.pageScrollTo({
+         scrollTop: 0
+       })
+     }
     },
     created () {
       this.swiper();
@@ -119,9 +138,14 @@
           // that.meuns = res.data && res.data['message'] ? res.data['message'].map(item => {
           //   return item.image_src
           // }) : []
-        }
+        // }
       // })
-    // }
+    },
+    onPageScroll (event) {
+      // 小程序生命周期函数，监控页面的滚动
+      // 如果滚动指定大小，那么就控制显示或隐藏
+      this.isShow = event.scrollTop > 50
+    }
   }
 </script>
 
@@ -188,5 +212,21 @@
     width: 233rpx;
     height: 188rpx;
     border-radius: 4px;
+  }
+  .to-top {
+    width:100rpx;
+    height:100rpx;
+    border-radius: 50%;
+    background:rgba(255,255,255,0.8);
+    position: fixed;
+    right:40rpx;
+    bottom:40rpx;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .to-top p {
+    font-size: 16px;
   }
 </style>
