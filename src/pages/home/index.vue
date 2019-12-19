@@ -24,6 +24,17 @@
      <div class="floor-title">
        <img src='https://www.zhengzhicheng.cn/pyg/pic_floor01_title.png' />
      </div>
+     <div class="floor-content">
+       <div class="left">
+         <img src="https://www.zhengzhicheng.cn/pyg/pic_floor01_1@2x.png" />
+       </div>
+       <div class="right">
+         <img src="https://www.zhengzhicheng.cn/pyg/pic_floor01_2@2x.png" />
+         <img src="https://www.zhengzhicheng.cn/pyg/pic_floor01_3@2x.png" />
+         <img src="https://www.zhengzhicheng.cn/pyg/pic_floor01_4@2x.png" />
+         <img src="https://www.zhengzhicheng.cn/pyg/pic_floor01_5@2x.png" />
+       </div>
+     </div>
    </div>
   </div>
 </template>
@@ -40,6 +51,7 @@
         autoplay: true,       // 自动播放
         circular: true,        // 是否采用衔接滑动
         meuns: [],             // 快捷菜单图片
+        floors: []             // 楼层图片
       }
     },
     methods: {
@@ -139,6 +151,7 @@
     width: 100%;
     height: 100%;
   }
+
   .menu {
     display: flex;
     justify-content: space-around;
@@ -148,8 +161,34 @@
     width: 150rpx;
     height: 150rpx;
   }
+
   .floor .floor-title img{
     width: 100%;
     height: 130rpx;
+  }
+  .floor .floor-content {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 20rpx;
+    box-sizing: border-box;
+  }
+  .floor .floor-content .left {
+    width: 240rpx;
+  }
+  .floor .floor-content .left img {
+    width: 232rpx;
+    height:385rpx;
+  }
+  .floor .floor-content .right {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .floor .floor-content .right img {
+    width: 233rpx;
+    height: 188rpx;
+    border-radius: 4px;
   }
 </style>
